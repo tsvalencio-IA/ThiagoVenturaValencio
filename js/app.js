@@ -1,5 +1,5 @@
 /* ==================================================================
-   CONTROLE DO PORTFÓLIO THIAGO VENTURA (KYB)
+   CONTROLE DO PORTFÓLIO THIAGO VENTURA VALENCIO (KYB)
    ================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
