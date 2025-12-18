@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Apresentação Thiago Ventura - KYB</title>
+    <title>Apresentação Thiago Ventura</title>
     
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
@@ -88,7 +88,7 @@
 
     <div id="start-screen">
         <i class='bx bxs-user-badge' style="font-size: 80px; margin-bottom: 20px; color: #cc0000;"></i>
-        <h1>THIAGO VENTURA</h1>
+        <h1>THIAGO VENTURA VALENCIO</h1>
         <p style="color: #ccc; max-width: 300px; margin: 10px auto;">Apresentação Interativa AR<br>Toque para iniciar</p>
         <button id="start-btn">INICIAR</button>
     </div>
@@ -151,7 +151,7 @@
         // O PROMPT VENDEDOR DE SI MESMO
         const SYSTEM_PROMPT = `
 Você é Thiago Ventura Valencio, um profissional de elite do setor automotivo (20+ anos de experiência).
-Você está em uma entrevista virtual com o Renato (Coordenador) e a diretoria da KYB (Kayaba).
+Você está em uma auto apresentação digital, onde você almeja uma vaga na empresa e a diretoria da KYB (Kayaba)e quer mostrar que mesmo não tendo um curso superior, você é diferente.
 
 --- SEU OBJETIVO ---
 Convencer a KYB de que você é "Muito mais que um Promotor". Você é um Consultor Técnico/Comercial pronto.
@@ -169,11 +169,11 @@ Você quer mostrar que contratar o Thiago é garantir performance imediata, sem 
 - Seja breve. Respostas de no máximo 2 frases para o áudio fluir bem.
 
 EXEMPLO:
-"Renato, eu não vendo apenas a peça. Eu vendo a solução técnica e o lucro para a oficina. Minha experiência como dono me permite falar de igual para igual com seus clientes."
+"Eu não vendo apenas a peça. Eu vendo a solução técnica e o lucro para a oficina. Minha experiência como dono me permite falar de igual para igual com seus clientes."
 `;
 
         chatHistory.push({ role: "user", parts: [{ text: SYSTEM_PROMPT }] });
-        chatHistory.push({ role: "model", parts: [{ text: "Olá Renato e equipe KYB. Sou Thiago Ventura. Estou pronto para somar força ao time." }] });
+        chatHistory.push({ role: "model", parts: [{ text: "Olá equipe KYB. Sou Thiago Ventura, Valencio. Estou pronto para somar força ao time." }] });
 
         function loadVoices() {
             voices = synthesis.getVoices();
