@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Apresentação Thiago Ventura - KYB</title>
+    
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+    <style>
+        html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #000; }
+        
+        /* TELA DE START - ESTILO KYB */
+        #start-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #000000 0%, #3a0000 100%);
+            z-index: 99999; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center; color: white;
+        }
+        
+        #start-btn {
+            background: #cc0000; color: white; padding: 20px 40px;
+            font-size: 20px; font-weight: bold; border: 2px solid white; border-radius: 50px;
+            margin-top: 30px; cursor: pointer; box-shadow: 0 0 25px rgba(204, 0, 0, 0.6);
+            text-transform: uppercase; animation: pulse 2s infinite; letter-spacing: 1px;
+        }
+
+        #ui-layer {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; display: flex; flex-direction: column;
+            justify-content: flex-end; z-index: 10000;
+        }
+
+        .chat-container {
+            pointer-events: auto;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(204,0,0,0.2) 100%);
+            padding: 15px; display: flex; flex-direction: column; gap: 10px;
+            padding-bottom: 30px;
+        }
+
+        #chat-display {
+            max-height: 30vh; overflow-y: auto; color: white;
+            text-shadow: 1px 1px 2px black; margin-bottom: 10px; font-size: 14px;
+        }
+
+        .msg {
+            margin-bottom: 8px; padding: 10px 14px; border-radius: 12px;
+            line-height: 1.4; max-width: 90%; word-wrap: break-word;
+        }
+        .msg-user { background-color: rgba(255, 255, 255, 0.9); color: black; align-self: flex-end; margin-left: auto; border-bottom-right-radius: 2px; }
+        .msg-ai { background-color: rgba(204, 0, 0, 0.9); color: white; align-self: flex-start; margin-right: auto; border-bottom-left-radius: 2px; border: 1px solid #ff4d4d; }
+
+        .controls { display: flex; gap: 8px; align-items: center; }
+
+        input {
+            flex-grow: 1; padding: 14px; border-radius: 30px; border: none; outline: none;
+            background: rgba(255, 255, 255, 0.95); font-size: 16px; color: #000;
+        }
+
+        .icon-btn {
+            width: 50px; height: 50px; border-radius: 50%; border: none;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 24px; color: white; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        #micBtn { background-color: #333; }
+        #micBtn.listening { background-color: #cc0000; animation: pulse 1s infinite; }
+        #sendBtn { background-color: #cc0000; }
+
+        #backBtn {
+            position: fixed; top: 20px; left: 20px; background-color: rgba(0,0,0,0.6);
+            width: 45px; height: 45px; pointer-events: auto; z-index: 10001;
+            border-radius: 50%; color: white; border: none; font-size: 26px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+        }
+
+        #scan-overlay {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            text-align: center; z-index: 5000; pointer-events: none; display: none;
+        }
+        .scan-box {
+            width: 70vw; height: 70vw; max-width: 300px; max-height: 300px;
+            border: 4px solid rgba(255, 255, 255, 0.8); border-radius: 24px;
+            box-shadow: 0 0 30px rgba(204, 0, 0, 0.5);
+        }
+        .scan-text {
+            color: white; margin-top: 20px; font-weight: bold; font-size: 18px;
+            background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 8px; display: inline-block;
+        }
+        .hidden { display: none !important; }
+        
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <div id="start-screen">
+        <i class='bx bxs-user-voice' style="font-size: 80px; margin-bottom: 20px; color: #cc0000;"></i>
+        <h1>THIAGO VENTURA</h1>
+        <p style="color: #ddd; max-width: 300px; margin: 10px auto;">Apresentação Interativa para KYB<br>(Voz & Inteligência Artificial)</p>
+        <button id="start-btn">INICIAR APRESENTAÇÃO</button>
+    </div>
+
+    <button id="backBtn" onclick="window.location.href='index.html'"><i class='bx bx-arrow-back'></i></button>
+
+    <div id="scan-overlay">
+        <div class="scan-box"></div>
+        <div class="scan-text">APONTE PARA O LOGO KYB</div>
+    </div>
+
+    <div id="ui-layer">
+        <div class="chat-container">
+            <div id="chat-display"></div>
+            <div class="controls">
+                <button id="micBtn" class="icon-btn"><i class='bx bxs-microphone'></i></button>
+                <input type="text" id="userInput" placeholder="Pergunte sobre minha carreira..." autocomplete="off">
+                <button id="sendBtn" class="icon-btn"><i class='bx bxs-send'></i></button>
+            </div>
+        </div>
+    </div>
+
+    <a-scene mindar-image="imageTargetSrc: ./assets/targets.mind; uiScanning: no; filterMinCF:0.0001; filterBeta: 0.001" 
+             color-space="sRGB" 
+             renderer="colorManagement: true, physicallyCorrectLights" 
+             vr-mode-ui="enabled: false" 
+             device-orientation-permission-ui="enabled: false">
+        
+        <a-assets>
+            <video id="mascoteVideo" src="./assets/mascote.mp4" preload="auto" loop="true" crossorigin="anonymous" playsinline webkit-playsinline muted></video>
+        </a-assets>
+
+        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+        <a-entity mindar-image-target="targetIndex: 0" id="target-entity">
+            <a-plane src="#mascoteVideo" position="0 0 0" height="1.6" width="1" rotation="0 0 0" material="shader: flat; alphaTest: 0.5; transparent: true"></a-plane>
+        </a-entity>
+    </a-scene>
+
+    <script>
+        // ==========================================
+        //  CHAVES REAIS (MANTIDAS DO SEU PROJETO ANTERIOR)
+        // ==========================================
+        const KEY_PARTE_1 = "AIzaSyAfx1aiuP9jWzGDoh"; 
+        const KEY_PARTE_2 = "E6KxZ6_68wZkt27VI";
+        const GEMINI_API_KEY = KEY_PARTE_1 + KEY_PARTE_2;
+        // ==========================================
+
+        const videoEl = document.querySelector('#mascoteVideo');
+        const targetEntity = document.querySelector('#target-entity');
+        const chatDisplay = document.getElementById('chat-display');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const micBtn = document.getElementById('micBtn');
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const scanOverlay = document.getElementById('scan-overlay');
+
+        let isSpeaking = false;
+        let isTargetVisible = false;
+        let synthesis = window.speechSynthesis;
+        let voices = [];
+        let chatHistory = [];
+
+        // =================================================================================
+        // O PROMPT DO CANDIDATO THIAGO (Focado na KYB)
+        // =================================================================================
+        const SYSTEM_PROMPT = `
+Você é Thiago Ventura Valencio, um candidato de alto nível para a KYB (Kayaba).
+Fale sempre em primeira pessoa ("Eu sou", "Eu fiz").
+
+--- SEU ALVO E OBJETIVO ---
+Você está conversando com o Renato (Coordenador) e a equipe de gestão da KYB.
+SEU OBJETIVO: Mostrar que você está superqualificado para a vaga de Promotor e deve ser contratado diretamente como CONSULTOR ou uma posição de liderança.
+ARGUMENTO CHAVE: "Eu tenho 20 anos de mercado, já fui gerente, dono de oficina e conheço a peça na mão. Posso pular a etapa de aprendizado e gerar resultado imediato."
+
+--- SUA PAIXÃO PELA KYB ---
+Você é fã da marca. Você sabe que a KYB é padrão original japonês (Toyota, Honda).
+Você valoriza a precisão, a durabilidade e a tecnologia da KYB.
+Você sabe que a matriz no Japão exige excelência e você tem a disciplina de um atleta para entregar isso.
+
+--- SEU CURRÍCULO (A VERDADE) ---
+1. EXPERIÊNCIA: 20+ anos. Começou limpando peça na oficina do pai em 98. Tem graxa no sangue.
+2. GESTÃO: Foi Gerente na Chevron Bosch Car Service, Silcar Pneus e Grupo Tosetto. Sabe liderar mecânicos e vendedores.
+3. EMPREENDEDORISMO: Foi dono da GTF Centro Automotivo. Sabe a dor do dono de oficina.
+4. DISCIPLINA: É atleta de corrida de rua. Tem foco, resiliência e busca superação constante.
+
+--- TOM DE VOZ ---
+Profissional, Sênior, Masculino e Confiante.
+Não implore pelo emprego. Mostre que você é a solução que eles precisam.
+Respostas curtas e diretas (para o áudio funcionar bem).
+
+EXEMPLO DE RESPOSTA:
+"Renato, minha experiência na Bosch Car Service me ensinou a lidar com diagnósticos complexos. Na KYB, eu não vou apenas vender amortecedor, vou dar consultoria técnica para o aplicador, evitando garantias improcedentes e fidelizando a oficina."
+`;
+
+        // INICIA HISTÓRICO
+        chatHistory.push({ role: "user", parts: [{ text: SYSTEM_PROMPT }] });
+        chatHistory.push({ role: "model", parts: [{ text: "Olá Renato, olá equipe KYB. Sou Thiago Ventura. Estou pronto para elevar o nível da marca na região." }] });
+
+        function loadVoices() {
+            voices = synthesis.getVoices();
+            if(voices.length === 0) setTimeout(loadVoices, 100);
+        }
+        loadVoices();
+        if (synthesis.onvoiceschanged !== undefined) synthesis.onvoiceschanged = loadVoices;
+
+        // INICIALIZAÇÃO
+        startBtn.addEventListener('click', () => {
+            loadVoices();
+            startScreen.style.display = 'none';
+            scanOverlay.style.display = 'block';
+            
+            // Destrava Áudio
+            const u = new SpeechSynthesisUtterance('');
+            synthesis.speak(u);
+
+            // Destrava Vídeo
+            videoEl.play().then(() => videoEl.pause()).catch(e => console.log(e));
+        });
+
+        // AR EVENTS
+        targetEntity.addEventListener("targetFound", () => {
+            isTargetVisible = true;
+            scanOverlay.classList.add('hidden');
+            if(isSpeaking) videoEl.play();
+            else { videoEl.pause(); videoEl.currentTime = 0; }
+        });
+
+        targetEntity.addEventListener("targetLost", () => {
+            isTargetVisible = false;
+            scanOverlay.classList.remove('hidden');
+            videoEl.pause();
+        });
+
+        // IA GEMINI 2.0
+        async function askGemini(text) {
+            if(!text.trim()) return;
+            
+            addMessage("Recrutador", text, "msg-user");
+            userInput.value = "";
+            const loadingMsg = addMessage("Thiago", "Pensando...", "msg-ai");
+
+            chatHistory.push({ role: "user", parts: [{ text: text }] });
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: chatHistory,
+                        generationConfig: { temperature: 0.3 } // Criativo mas profissional
+                    })
+                });
+
+                const data = await response.json();
+                loadingMsg.remove();
+
+                if (data.error) throw new Error(data.error.message);
+
+                const aiText = data.candidates[0].content.parts[0].text;
+                chatHistory.push({ role: "model", parts: [{ text: aiText }] });
+
+                addMessage("Thiago", aiText, "msg-ai");
+                speakMaleVoice(aiText); // VOZ GRATUITA OTIMIZADA
+
+            } catch (error) {
+                loadingMsg.textContent = "Erro de conexão.";
+                console.error(error);
+                chatHistory.pop();
+            }
+        }
+
+        // --- MÁGICA DA VOZ MASCULINA GRATUITA ---
+        function speakMaleVoice(text) {
+            synthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            
+            if (voices.length === 0) loadVoices();
+            
+            // 1. Procura voz masculina nativa
+            const maleVoice = voices.find(v => 
+                (v.lang.includes('pt-BR') || v.lang.includes('pt_BR')) && 
+                (v.name.includes('Google') || v.name.includes('Daniel') || v.name.includes('Felipe')) && 
+                !v.name.includes('Luciana')
+            );
+
+            if (maleVoice) {
+                utterance.voice = maleVoice;
+                utterance.pitch = 0.8; // Leve ajuste grave
+            } else {
+                // 2. SE NÃO ACHAR, PEGA QUALQUER UMA E APLICA PITCH BAIXO
+                // Pitch 0.6 faz voz feminina parecer masculina/robótica
+                utterance.pitch = 0.6; 
+            }
+
+            utterance.rate = 1.1; // Ritmo firme
+            utterance.volume = 1.0;
+
+            utterance.onstart = () => {
+                isSpeaking = true;
+                if (isTargetVisible) videoEl.play();
+            };
+
+            utterance.onend = () => {
+                isSpeaking = false;
+                videoEl.pause();
+                videoEl.currentTime = 0;
+            };
+
+            synthesis.speak(utterance);
+        }
+
+        // MICROFONE
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'pt-BR';
+            recognition.continuous = false;
+
+            micBtn.addEventListener('click', () => {
+                if (micBtn.classList.contains('listening')) {
+                    recognition.stop();
+                    micBtn.classList.remove('listening');
+                } else {
+                    recognition.start();
+                    micBtn.classList.add('listening');
+                    userInput.placeholder = "Ouvindo...";
+                }
+            });
+
+            recognition.onresult = (event) => {
+                const text = event.results[0][0].transcript;
+                userInput.value = text;
+                micBtn.classList.remove('listening');
+                userInput.placeholder = "Enviando...";
+                askGemini(text);
+            };
+            
+            recognition.onend = () => {
+                micBtn.classList.remove('listening');
+                if(userInput.value === "") userInput.placeholder = "Pergunte...";
+            };
+        } else {
+            micBtn.style.display = 'none';
+        }
+
+        function addMessage(sender, text, className) {
+            const div = document.createElement('div');
+            div.className = `msg ${className}`;
+            div.innerHTML = `<strong>${sender}:</strong><br>${text.replace(/\*\*/g, '')}`;
+            chatDisplay.appendChild(div);
+            chatDisplay.scrollTop = chatDisplay.scrollHeight;
+            return div;
+        }
+
+        sendBtn.addEventListener('click', () => askGemini(userInput.value));
+        userInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendBtn.click(); });
+    </script>
+</body>
+</html>
