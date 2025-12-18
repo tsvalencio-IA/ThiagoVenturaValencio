@@ -1,13 +1,14 @@
-const CACHE_NAME = 'thiago-kyb-v1.0';
+const CACHE_NAME = 'thiago-kyb-v1.2';
 const urlsToCache = [
     './',
     './index.html',
     './apresentacao.html',
+    './js/app.js',
     './assets/targets.mind',
     './assets/mascote.mp4',
-    './assets/mascote_perfil.jpg', // Adicione essa foto na pasta assets
+    './assets/mascote_perfil.jpg',
     'https://cdn.tailwindcss.com',
-    'https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap',
+    'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap',
     'https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css',
     'https://aframe.io/releases/1.4.2/aframe.min.js',
     'https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js'
